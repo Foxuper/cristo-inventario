@@ -1,98 +1,103 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Collection;
-use Livewire\Volt\Component;
 use Mary\Traits\Toast;
+use Livewire\Volt\Component;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
-new class extends Component {
+new class extends Component
+{
     use Toast;
 
-    public string $search = '';
+    public string $busqueda = '';
+    public bool $mostrar_filtros = false;
+    public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
 
-    public bool $drawer = false;
-
-    public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
-
-    // Clear filters
-    public function clear(): void
+    // Limpiar filtros
+    public function limpiar(): void
     {
         $this->reset();
-        $this->success('Filters cleared.', position: 'toast-bottom');
+        $this->success(__('Filters cleared'), position: 'toast-bottom');
     }
 
-    // Delete action
-    public function delete($id): void
+    // Cantidad de filtros activos
+    public function cantidad_filtros(): ?int
     {
-        $this->warning("Will delete #$id", 'It is fake.', position: 'toast-bottom');
+        $filtros = 0;
+        if ($this->busqueda) $filtros++;
+        return $filtros > 0 ? $filtros : null;
     }
 
-    // Table headers
-    public function headers(): array
+    // Eliminar usuario
+    public function eliminar(User $usuario)
+    {
+        if ($es_usuario_actual = $usuario == auth()->user())
+            auth()->logout();
+        if ($usuario->delete() && $es_usuario_actual)
+            return redirect()->to('/login');
+        $this->info(__('User deleted'), position: 'toast-bottom');
+    }
+
+    // Encabezado de la tabla
+    public function encabezado(): array
     {
         return [
             ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
-            ['key' => 'name', 'label' => 'Name', 'class' => 'w-64'],
-            ['key' => 'age', 'label' => 'Age', 'class' => 'w-20'],
-            ['key' => 'email', 'label' => 'E-mail', 'sortable' => false],
+            ['key' => 'name', 'label' => ucfirst(__('name')), 'class' => 'w-64'],
+            ['key' => 'email', 'label' => ucfirst(__('email'))],
         ];
     }
 
-    /**
-     * For demo purpose, this is a static collection.
-     *
-     * On real projects you do it with Eloquent collections.
-     * Please, refer to maryUI docs to see the eloquent examples.
-     */
-    public function users(): Collection
+    // Consulta de usuarios
+    public function usuarios(): Collection
     {
-        return collect([
-            ['id' => 1, 'name' => 'Mary', 'email' => 'mary@mary-ui.com', 'age' => 23],
-            ['id' => 2, 'name' => 'Giovanna', 'email' => 'giovanna@mary-ui.com', 'age' => 7],
-            ['id' => 3, 'name' => 'Marina', 'email' => 'marina@mary-ui.com', 'age' => 5],
-        ])
-            ->sortBy([[...array_values($this->sortBy)]])
-            ->when($this->search, function (Collection $collection) {
-                return $collection->filter(fn(array $item) => str($item['name'])->contains($this->search, true));
-            });
+        return User::query()
+            ->when($this->busqueda, function (Builder $query) {
+                $query->where('name', 'like', "%$this->busqueda%")
+                    ->orWhere('email', 'like', "%$this->busqueda%");
+            })
+            ->orderBy(...array_values($this->sortBy))
+            ->get();
     }
 
     public function with(): array
     {
         return [
-            'users' => $this->users(),
-            'headers' => $this->headers()
+            'usuarios' => $this->usuarios(),
+            'encabezado' => $this->encabezado(),
+            'cantidad_filtros' => $this->cantidad_filtros(),
         ];
     }
 }; ?>
 
 <div>
-    <!-- HEADER -->
-    <x-header title="Hello" separator progress-indicator>
+    <!-- Encabezado -->
+    <x-header :title="__('Users')" separator progress-indicator>
         <x-slot:middle class="!justify-end">
-            <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
+            <x-input :placeholder="__('Search').'...'" wire:model.live.debounce="busqueda" clearable icon="o-magnifying-glass" />
         </x-slot:middle>
         <x-slot:actions>
-            <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
+            <x-button :label="__('Filters')" :badge="$cantidad_filtros" x-on:click="$wire.mostrar_filtros = true" responsive icon="o-funnel" />
         </x-slot:actions>
     </x-header>
 
-    <!-- TABLE  -->
+    <!-- Tabla  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$users" :sort-by="$sortBy">
+        <x-table :headers="$encabezado" :rows="$usuarios" :sort-by="$sortBy">
             @scope('actions', $user)
-            <x-button icon="o-trash" wire:click="delete({{ $user['id'] }})" wire:confirm="Are you sure?" spinner class="btn-ghost btn-sm text-red-500" />
+            <x-button icon="o-trash" wire:click="eliminar({{ $user['id'] }})" :wire:confirm="__('Are you sure?')" spinner class="btn-ghost btn-sm text-red-500" />
             @endscope
         </x-table>
     </x-card>
 
-    <!-- FILTER DRAWER -->
-    <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
-        <x-input placeholder="Search..." wire:model.live.debounce="search" icon="o-magnifying-glass" @keydown.enter="$wire.drawer = false" />
+    <!-- Filtros -->
+    <x-drawer wire:model="mostrar_filtros" :title="__('Filters')" right separator with-close-button class="lg:w-1/3">
+        <x-input :placeholder="__('Search').'...'" wire:model.live.debounce="busqueda" icon="o-magnifying-glass" x-on:keydown.enter="$wire.mostrar_filtros = false" />
 
         <x-slot:actions>
-            <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
-            <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />
+            <x-button :label="__('Reset')" icon="o-x-mark" wire:click="limpiar" spinner />
+            <x-button :label="__('Accept')" icon="o-check" class="btn-primary" x-on:click="$wire.mostrar_filtros = false" />
         </x-slot:actions>
     </x-drawer>
 </div>

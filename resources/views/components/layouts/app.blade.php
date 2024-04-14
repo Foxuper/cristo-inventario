@@ -49,6 +49,7 @@
 
                 {{-- Menu items --}}
                 <x-menu-item :title="__('Home')" icon="o-home" link="/" />
+                <x-menu-item :title="__('Users')" icon="o-users" link="/users" />
             </x-menu>
         </x-slot:sidebar>
 

@@ -223,5 +223,11 @@
     "Reset": "Restablecer",
     "Filters cleared": "Filtros limpiados",
     "User deleted": "Usuario eliminado",
-    "Are you sure?": "¿Estás seguro?"
+    "User updated": "Usuario actualizado",
+    "User created": "Usuario creado",
+    "Are you sure?": "¿Estás seguro?",
+    "Basic": "Básico",
+    "Basic information about the user": "Información básica del usuario",
+    "Security": "Seguridad",
+    "Security information about the user": "Información de seguridad del usuario"
 }

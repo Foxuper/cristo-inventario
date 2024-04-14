@@ -223,5 +223,11 @@
     "Reset": "Reset",
     "Filters cleared": "Filters cleared",
     "User deleted": "User deleted",
-    "Are you sure?": "Are you sure?"
+    "User updated": "User updated",
+    "User created": "User created",
+    "Are you sure?": "Are you sure?",
+    "Basic": "Basic",
+    "Basic information about the user": "Basic information about the user",
+    "Security": "Security",
+    "Security information about the user": "Security information about the user"
 }

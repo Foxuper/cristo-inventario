@@ -44,8 +44,8 @@ new class extends Component
     {
         return [
             ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
-            ['key' => 'name', 'label' => ucfirst(__('name')), 'class' => 'w-64'],
-            ['key' => 'email', 'label' => ucfirst(__('email'))],
+            ['key' => 'name', 'label' => ucfirst(__('validation.attributes.name')), 'class' => 'w-64'],
+            ['key' => 'email', 'label' => ucfirst(__('validation.attributes.email'))],
         ];
     }
 
@@ -79,12 +79,13 @@ new class extends Component
         </x-slot:middle>
         <x-slot:actions>
             <x-button :label="__('Filters')" :badge="$cantidad_filtros" x-on:click="$wire.mostrar_filtros = true" responsive icon="o-funnel" />
+            <x-button :label="__('Create')" link="/users/create" responsive icon="o-plus" class="btn-primary" />
         </x-slot:actions>
     </x-header>
 
     <!-- Tabla  -->
     <x-card>
-        <x-table :headers="$encabezado" :rows="$usuarios" :sort-by="$sortBy">
+        <x-table :headers="$encabezado" :rows="$usuarios" :sort-by="$sortBy" link="users/{id}/edit">
             @scope('actions', $user)
             <x-button icon="o-trash" wire:click="eliminar({{ $user['id'] }})" :wire:confirm="__('Are you sure?')" spinner class="btn-ghost btn-sm text-red-500" />
             @endscope

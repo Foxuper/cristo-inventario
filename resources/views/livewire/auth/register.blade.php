@@ -5,7 +5,6 @@ use Illuminate\View\View;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Layout;
-use Illuminate\Support\Facades\Hash;
 
 new #[Layout('components.layouts.empty')]
 class extends Component
@@ -36,8 +35,6 @@ class extends Component
     public function register()
     {
         $data = $this->validate();
-        $data['password'] = Hash::make($data['password']);
-
         auth()->login(User::create($data));
         request()->session()->regenerate();
         return redirect('/');

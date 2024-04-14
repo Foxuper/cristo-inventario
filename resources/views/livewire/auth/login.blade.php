@@ -2,17 +2,17 @@
 
 use Illuminate\View\View;
 use Livewire\Volt\Component;
-use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 
 new #[Layout('components.layouts.empty')] #[Title('Login')]
 class extends Component
 {
-    #[Rule('required|email')]
+    #[Validate('required|email')]
     public string $email = '';
 
-    #[Rule('required')]
+    #[Validate('required')]
     public string $password = '';
 
     public bool $remember = false;

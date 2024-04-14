@@ -3,22 +3,22 @@
 use App\Models\User;
 use Illuminate\View\View;
 use Livewire\Volt\Component;
-use Livewire\Attributes\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 
 new #[Layout('components.layouts.empty')]
 class extends Component
 {
-    #[Rule('required')]
+    #[Validate('required')]
     public string $name = '';
 
-    #[Rule('required|email|unique:users')]
+    #[Validate('required|email|unique:users')]
     public string $email = '';
 
-    #[Rule('required|confirmed')]
+    #[Validate('required|confirmed')]
     public string $password = '';
 
-    #[Rule('required')]
+    #[Validate('required')]
     public string $password_confirmation = '';
 
     public function rendering(View $view): void

@@ -52,6 +52,7 @@
                 <x-menu-item :title="__('Users')" icon="o-users" link="/users" />
                 <x-menu-item :title="__('Units')" icon="o-cube" link="/unidades" />
                 <x-menu-item :title="__('Lines')" icon="o-tag" link="/lineas" />
+                <x-menu-item :title="__('Materials')" icon="o-rectangle-group" link="/materiales" />
             </x-menu>
         </x-slot:sidebar>
 

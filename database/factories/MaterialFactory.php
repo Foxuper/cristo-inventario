@@ -23,6 +23,7 @@ class MaterialFactory extends Factory
         return [
             'descripcion' => $this->faker->sentence,
             'cantidad' => $this->faker->numberBetween(1, 100),
+            'precio' => $this->faker->randomFloat(2, 10, 1000),
             'codigo' => $this->faker->unique()->regexify('[a-zA-Z0-9]{8}'),
             'clave_sat' => $this->faker->unique()->numberBetween(10000000, 99999999),
             'activo' => $this->faker->boolean,

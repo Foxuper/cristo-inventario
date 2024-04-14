@@ -18,6 +18,7 @@ return new class extends Migration
 
             $table->string('descripcion');
             $table->integer('cantidad');
+            $table->decimal('precio');
             $table->string('codigo')->nullable();
             $table->string('clave_sat')->nullable();
             $table->boolean('activo')->default(true);

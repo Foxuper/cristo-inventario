@@ -13,6 +13,7 @@ class Material extends Model
     protected $fillable = [
         'descripcion',
         'cantidad',
+        'precio',
         'codigo',
         'clave_sat',
         'activo',
@@ -23,6 +24,7 @@ class Material extends Model
 
     protected $casts = [
         'cantidad' => 'integer',
+        'precio' => 'float',
         'activo' => 'boolean',
     ];
 

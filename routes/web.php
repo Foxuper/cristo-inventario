@@ -33,4 +33,9 @@ Route::middleware('auth')->group(function () {
     Volt::route('/lineas', 'lineas.index');
     Volt::route('/lineas/create', 'lineas.create');
     Volt::route('/lineas/{linea}/edit', 'lineas.edit');
+
+    // Material
+    Volt::route('/materiales', 'materiales.index');
+    Volt::route('/materiales/create', 'materiales.create');
+    Volt::route('/materiales/{material}/edit', 'materiales.edit');
 });

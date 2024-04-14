@@ -50,6 +50,8 @@
                 {{-- Menu items --}}
                 <x-menu-item :title="__('Home')" icon="o-home" link="/" />
                 <x-menu-item :title="__('Users')" icon="o-users" link="/users" />
+                <x-menu-item :title="__('Units')" icon="o-cube" link="/unidades" />
+                <x-menu-item :title="__('Lines')" icon="o-tag" link="/lineas" />
             </x-menu>
         </x-slot:sidebar>
 

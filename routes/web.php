@@ -23,4 +23,14 @@ Route::middleware('auth')->group(function () {
     Volt::route('/users', 'users.index');
     Volt::route('/users/create', 'users.create');
     Volt::route('/users/{user}/edit', 'users.edit');
+
+    // Unidad
+    Volt::route('/unidades', 'unidades.index');
+    Volt::route('/unidades/create', 'unidades.create');
+    Volt::route('/unidades/{unidad}/edit', 'unidades.edit');
+
+    // Linea
+    Volt::route('/lineas', 'lineas.index');
+    Volt::route('/lineas/create', 'lineas.create');
+    Volt::route('/lineas/{linea}/edit', 'lineas.edit');
 });

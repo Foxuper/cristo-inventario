@@ -37,7 +37,21 @@ new class extends Component
         return $filtros > 0 ? $filtros : null;
     }
 
-    // Eliminar usuario
+    // Agregar cantidad
+    public function agregar(int $material_id)
+    {
+        $material = Material::find($material_id);
+        $material->update(['cantidad' => $material->cantidad + 1]);
+    }
+
+    // Quitar cantidad
+    public function quitar(int $material_id)
+    {
+        $material = Material::find($material_id);
+        $material->update(['cantidad' => $material->cantidad - 1]);
+    }
+
+    // Eliminar material
     public function eliminar(Material $material)
     {
         $material->delete();
@@ -61,7 +75,7 @@ new class extends Component
         ];
     }
 
-    // Consulta de usuarios
+    // Consulta de materiales
     public function materiales(): Collection
     {
         return Material::query()
@@ -85,6 +99,25 @@ new class extends Component
             ->get();
     }
 
+    // Exportar a CSV
+    public function exportar()
+    {
+        $materiales = $this->materiales();
+        $encabezado = array_map(fn ($columna) => $columna['key'], $this->encabezado());
+
+        $archivo = fopen('php://temp', 'w');
+        fputcsv($archivo, $encabezado);
+
+        foreach ($materiales as $material)
+            fputcsv($archivo, $material->only($encabezado));
+
+        rewind($archivo);
+        $csv = stream_get_contents($archivo);
+
+        fclose($archivo);
+        return response()->streamDownload(fn () => print($csv), 'materiales.csv');
+    }
+
     public function with(): array
     {
         return [
@@ -106,6 +139,7 @@ new class extends Component
         <x-slot:actions>
             <x-button :label="__('Filters')" :badge="$cantidad_filtros" x-on:click="$wire.mostrar_filtros = true" responsive icon="o-funnel" />
             <x-button :label="__('Create')" link="/materiales/create" responsive icon="o-plus" class="btn-primary" />
+            <x-button :label="__('Export')" icon="o-arrow-down-tray" class="btn-primary" wire:click="exportar" />
         </x-slot:actions>
     </x-header>
 
@@ -119,7 +153,11 @@ new class extends Component
             ${{ number_format($material['precio'], 2) }}
             @endscope
             @scope('actions', $material)
-            <x-button icon="o-trash" wire:click="eliminar({{ $material['id'] }})" :wire:confirm="__('Are you sure?')" spinner class="btn-ghost btn-sm text-red-500" />
+            <div class="flex">
+                <x-button icon="o-plus" wire:click="agregar({{ $material['id'] }})" class="btn-ghost btn-sm" />
+                <x-button icon="o-minus" wire:click="quitar({{ $material['id'] }})" class="btn-ghost btn-sm" />
+                <x-button icon="o-trash" wire:click="eliminar({{ $material['id'] }})" :wire:confirm="__('Are you sure?')" spinner class="btn-ghost btn-sm text-red-500" />
+            </div>
             @endscope
         </x-table>
     </x-card>

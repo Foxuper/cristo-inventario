@@ -32,3 +32,17 @@
 .select {
     @apply focus:outline-offset-0
 }
+
+nav[role="navigation"] p > span,
+nav[role="navigation"] span > span,
+nav[role="navigation"] span > button {
+    @apply dark:border-gray-600 dark:text-gray-400
+}
+
+nav[role="navigation"] div.flex > span > span {
+    @apply dark:opacity-30 dark:bg-transparent
+}
+
+nav[role="navigation"] span[aria-current="page"] > span {
+    @apply dark:text-gray-800
+}

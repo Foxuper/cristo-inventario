@@ -16,3 +16,19 @@
 .mary-table-pagination button {
     @apply bg-base-100
 }
+
+.input {
+    @apply focus:outline-offset-0
+}
+
+.checkbox {
+    @apply focus:outline-offset-0
+}
+
+.toggle {
+    @apply focus:outline-offset-0
+}
+
+.select {
+    @apply focus:outline-offset-0
+}

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use App\Models\Linea;
 use App\Models\Unidad;
 use App\Models\Material;

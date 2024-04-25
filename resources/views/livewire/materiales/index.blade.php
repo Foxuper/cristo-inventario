@@ -5,12 +5,15 @@ use App\Models\Unidad;
 use Mary\Traits\Toast;
 use App\Models\Material;
 use Livewire\Volt\Component;
-use Illuminate\Support\Collection;
+use Livewire\WithPagination;
+use App\Traits\ClearsFilters;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 new class extends Component
 {
-    use Toast;
+    use Toast, WithPagination, ClearsFilters;
+
     public int $linea_id = 0;
     public int $unidad_medida_id = 0;
     public int $unidad_compra_id = 0;
@@ -18,13 +21,6 @@ new class extends Component
     public string $busqueda = '';
     public bool $mostrar_filtros = false;
     public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
-
-    // Limpiar filtros
-    public function limpiar(): void
-    {
-        $this->reset();
-        $this->success(__('Filters cleared'), position: 'toast-bottom');
-    }
 
     // Cantidad de filtros activos
     public function cantidad_filtros(): ?int
@@ -76,7 +72,7 @@ new class extends Component
     }
 
     // Consulta de materiales
-    public function materiales(): Collection
+    public function materiales(): LengthAwarePaginator
     {
         return Material::query()
             ->withAggregate('linea', 'nombre')
@@ -96,7 +92,7 @@ new class extends Component
             ->when($this->unidad_compra_id > 0, fn (Builder $query)
             => $query->where('unidad_compra_id', $this->unidad_compra_id))
             ->orderBy(...array_values($this->sortBy))
-            ->get();
+            ->paginate(10);
     }
 
     // Exportar a CSV
@@ -145,7 +141,7 @@ new class extends Component
 
     <!-- Tabla  -->
     <x-card>
-        <x-table :headers="$encabezado" :rows="$materiales" :sort-by="$sortBy" link="materiales/{id}/edit">
+        <x-table :headers="$encabezado" :rows="$materiales" :sort-by="$sortBy" link="materiales/{id}/edit" with-pagination>
             @scope('cell_activo', $material)
             <x-badge :value="$material['activo'] ? __('Yes') : __('No')" :class="$material['activo'] ? 'badge-primary' : 'badge-danger'" />
             @endscope

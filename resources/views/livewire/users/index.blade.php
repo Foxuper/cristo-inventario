@@ -3,23 +3,19 @@
 use App\Models\User;
 use Mary\Traits\Toast;
 use Livewire\Volt\Component;
+use Livewire\WithPagination;
+use App\Traits\ClearsFilters;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 new class extends Component
 {
-    use Toast;
+    use Toast, WithPagination, ClearsFilters;
 
     public string $busqueda = '';
     public bool $mostrar_filtros = false;
     public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
-
-    // Limpiar filtros
-    public function limpiar(): void
-    {
-        $this->reset();
-        $this->success(__('Filters cleared'), position: 'toast-bottom');
-    }
 
     // Cantidad de filtros activos
     public function cantidad_filtros(): ?int
@@ -50,7 +46,7 @@ new class extends Component
     }
 
     // Consulta de usuarios
-    public function usuarios(): Collection
+    public function usuarios(): LengthAwarePaginator
     {
         return User::query()
             ->when($this->busqueda, function (Builder $query) {
@@ -58,7 +54,7 @@ new class extends Component
                     ->orWhere('email', 'like', "%$this->busqueda%");
             })
             ->orderBy(...array_values($this->sortBy))
-            ->get();
+            ->paginate(10);
     }
 
     public function with(): array
@@ -85,7 +81,7 @@ new class extends Component
 
     <!-- Tabla  -->
     <x-card>
-        <x-table :headers="$encabezado" :rows="$usuarios" :sort-by="$sortBy" link="users/{id}/edit">
+        <x-table :headers="$encabezado" :rows="$usuarios" :sort-by="$sortBy" link="users/{id}/edit" with-pagination>
             @scope('actions', $user)
             <x-button icon="o-trash" wire:click="eliminar({{ $user['id'] }})" :wire:confirm="__('Are you sure?')" spinner class="btn-ghost btn-sm text-red-500" />
             @endscope

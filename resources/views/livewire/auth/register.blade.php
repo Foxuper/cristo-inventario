@@ -57,10 +57,13 @@ class extends Component
             wire:model="password_confirmation" type="password" icon="o-key" inline />
 
         <x-slot:actions>
-            <x-button :label="__('auth.already_registered')"
-                class="btn-ghost" link="/login" />
-            <x-button :label="__('Register')"
-                class="btn-primary" type="submit" icon="o-paper-airplane" spinner="register" />
+            <div class="flex w-full items-center">
+                <div class="flex-1"><x-theme-toggle /></div>
+                <x-button :label="__('auth.already_registered')"
+                    class="btn-ghost" link="/login" />
+                <x-button :label="__('Register')"
+                    class="btn-primary" type="submit" icon="o-paper-airplane" spinner="register" />
+            </div>
         </x-slot:actions>
     </x-form>
 </div>

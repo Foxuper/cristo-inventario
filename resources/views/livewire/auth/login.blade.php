@@ -55,10 +55,13 @@ class extends Component
             wire:model="remember" />
 
         <x-slot:actions>
-            <x-button :label="ucfirst(__('auth.create_account'))"
-                class="btn-ghost" link="/register" />
-            <x-button :label="__('Login')"
-                class="btn-primary" type="submit" icon="o-paper-airplane"  spinner="login" />
+            <div class="flex w-full items-center">
+                <div class="flex-1"><x-theme-toggle /></div>
+                <x-button :label="ucfirst(__('auth.create_account'))"
+                    class="btn-ghost" link="/register" />
+                <x-button :label="__('Login')"
+                    class="btn-primary" type="submit" icon="o-paper-airplane"  spinner="login" />
+            </div>
         </x-slot:actions>
     </x-form>
 </div>

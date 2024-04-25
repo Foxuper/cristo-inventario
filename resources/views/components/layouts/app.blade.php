@@ -41,7 +41,10 @@
                 <x-menu-separator />
                 <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover class="!-my-2 -mx-2 rounded">
                     <x-slot:actions>
-                        <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" :tooltip-left="__('Logout')" no-wire-navigate link="/logout" />
+                        <div class="flex space-x-2">
+                            <x-theme-toggle class="pt-0.5" />
+                            <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" :tooltip-left="__('Logout')" no-wire-navigate link="/logout" />
+                        </div>
                     </x-slot:actions>
                 </x-list-item>
                 <x-menu-separator />
